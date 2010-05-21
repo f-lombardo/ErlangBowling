@@ -1,0 +1,2 @@
+-define(STRIKE, 10).
+-define(is_spare(A, B), A + B =:= ?STRIKE).
