@@ -1,6 +1,6 @@
-%% Author: francol
+%% Author: Franco Lombardo
 %% Created: 09/mag/2010
-%% Description: Robert C. Matin's Bowling Game Kata
+%% Description: Robert C. Martin's Bowling Game Kata
 -module(bowling).
 
 -export([score/1]).
