@@ -32,7 +32,15 @@ perfectGameScores300_test() ->
 spareOnLastFrameHasSpareBonus_test() ->
 	Game = listOf(1, 18) ++ [3, 7, 3],
 	?assertEqual(31, bowling:score(Game)).
-	
+
+strinkeOnLastFrameHasStrikeBonus_test() ->
+  Game = listOf(0, 18) ++ [10, 2, 3],
+  ?assertEqual(15, bowling:score(Game)).
+
+pitStrikeNinthFrame_test() ->
+  Game = listOf(0, 16) ++ [10, 2, 3],
+  ?assertEqual(20, bowling:score(Game)).
+
 %%
 %% Service functions
 %%
