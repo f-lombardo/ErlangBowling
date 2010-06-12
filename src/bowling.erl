@@ -11,17 +11,28 @@
 %% API Functions
 %%
 score(Rolls) ->
-  score(Rolls, 0).
+  simpleScore(frames(Rolls, ?NUMBER_OF_FRAMES)).
 
-score([A, B, C], ScoreSoFar) when ?is_spare(A, B) ->
-  ScoreSoFar + A + B + C;
-score([?STRIKE, A, B], ScoreSoFar) ->
-  ScoreSoFar + ?STRIKE + A + B;
-score([?STRIKE, A, B| NextRolls], ScoreSoFar) ->
-  score([A, B] ++ NextRolls, ScoreSoFar + ?STRIKE + A + B);
-score([A, B, C| NextRolls], ScoreSoFar) when ?is_spare(A, B) ->
-  score([C| NextRolls], ScoreSoFar + A + B + C);
-score([A, B| NextRolls], ScoreSoFar) ->
-  score(NextRolls, ScoreSoFar + A + B);
-score([], ScoreSoFar) ->
-  ScoreSoFar.
+simpleScore(Frames) ->
+  SumOfElements = fun ({A, B}, Accumulator) -> A + B  + Accumulator;
+                      ({A, B, C}, Accumulator) -> A + B + C + Accumulator
+                  end,
+  lists:foldl(SumOfElements, 0, Frames).
+
+frames(_Rolls, 0) ->
+  [];
+
+frames([A, B, C | NextRolls], FramesLeft) when ?is_spare(A, B) andalso ?not_last_frame(FramesLeft) ->
+  [{A, B, C} | frames([C | NextRolls], FramesLeft -1)];
+
+frames([A, B, C | NextRolls], FramesLeft) when ?is_spare(A, B) ->
+  [{A, B, C} | frames(NextRolls, FramesLeft -1)];
+
+frames([?STRIKE, A, B | NextRolls], FramesLeft) when ?not_last_frame(FramesLeft)->
+  [{?STRIKE, A, B} | frames([A | [B | NextRolls]], FramesLeft -1)];
+
+frames([?STRIKE, A, B | NextRolls], FramesLeft) ->
+  [{?STRIKE, A, B} | frames(NextRolls, FramesLeft -1)];
+
+frames([A, B | NextRolls], FramesLeft) ->
+  [{A, B} | frames(NextRolls, FramesLeft -1)].
